@@ -81,9 +81,9 @@ function Navbar() {
         </div>
       </div>
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
-        <Link to="/" className="flex shrink-0 items-center gap-2 font-black tracking-wide text-brand-700">
-          <span className="grid h-10 w-10 place-items-center rounded bg-brand-700 text-white shadow-sm">NC</span>
-          <span className="text-xl">NexaCart</span>
+        <Link to="/" className="flex min-w-0 shrink-0 items-center gap-2 font-black tracking-wide text-brand-700">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded bg-brand-700 text-white shadow-sm">NC</span>
+          <span className="hidden text-xl min-[390px]:inline">NexaCart</span>
         </Link>
         <div className="mx-4 hidden max-w-xl flex-1 lg:block">
           <SearchBox compact />
@@ -139,6 +139,20 @@ function Navbar() {
             <Link to="/auth" onClick={() => setMenuOpen(false)} className="font-semibold text-slate-700">
               {user ? user.email : 'Login / Register'}
             </Link>
+            <div className="grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
+              {['Electronics', 'Fashion', 'Home', 'Beauty', 'Sports', 'Grocery'].map((category) => (
+                <button
+                  key={category}
+                  onClick={() => {
+                    dispatch(setFilter({ category }))
+                    setMenuOpen(false)
+                  }}
+                  className="rounded border border-slate-200 px-3 py-2 text-left text-sm font-bold text-slate-600"
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -201,9 +215,12 @@ function HomePage() {
                 Shop curated electronics, fashion, home, beauty, sports, and grocery picks with fast checkout and saved carts.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <a href="#catalog" className="inline-flex h-11 items-center gap-2 rounded bg-white px-5 text-sm font-black text-ink">
+                <button
+                  onClick={() => document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex h-11 items-center gap-2 rounded bg-white px-5 text-sm font-black text-ink"
+                >
                   Shop deals <ChevronRight size={17} />
-                </a>
+                </button>
                 <button onClick={() => dispatch(setFilter({ rating: 4.5 }))} className="h-11 rounded border border-white/40 px-5 text-sm font-black text-white">
                   Top rated
                 </button>
@@ -594,6 +611,11 @@ function CheckoutPage() {
   const cart = useSelector((state) => state.cart.items)
   const user = useSelector((state) => state.auth.user)
   const [step, setStep] = useState(1)
+  const [orderPlaced, setOrderPlaced] = useState(false)
+
+  useEffect(() => {
+    dispatch(setCartOpen(false))
+  }, [dispatch])
   const schema = yup.object({
     name: yup.string().required('Name is required'),
     email: yup.string().email('Enter a valid email').required('Email is required'),
@@ -607,9 +629,28 @@ function CheckoutPage() {
   })
 
   const onSubmit = () => {
+    dispatch(setCartOpen(false))
     dispatch(clearCart())
-    navigate('/')
-    alert('Order placed successfully. This is a frontend demo flow.')
+    setOrderPlaced(true)
+  }
+
+  if (orderPlaced) {
+    return (
+      <section className="mx-auto max-w-3xl px-4 py-12 text-center sm:px-6 lg:px-8">
+        <div className="rounded border border-slate-200 bg-white p-8 shadow-soft">
+          <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-mint/10 text-mint">
+            <CheckCircle2 size={30} />
+          </span>
+          <h1 className="mt-5 text-3xl font-black">Order placed successfully</h1>
+          <p className="mx-auto mt-3 max-w-md font-semibold leading-7 text-slate-600">
+            Thank you for shopping with NexaCart. Your order confirmation and delivery updates are ready in this frontend flow.
+          </p>
+          <button onClick={() => navigate('/')} className="mt-6 h-12 rounded bg-ink px-6 font-black text-white hover:bg-brand-700">
+            Continue Shopping
+          </button>
+        </div>
+      </section>
+    )
   }
 
   if (cart.length === 0) return <EmptyPage title="Your cart is empty" />
@@ -779,19 +820,53 @@ function EmptyPage({ title }) {
 
 function Footer() {
   return (
-    <footer className="mt-8 border-t border-slate-200 bg-white">
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 text-sm text-slate-500 sm:px-6 md:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
+    <footer className="mt-10 border-t border-slate-200 bg-white">
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1.2fr_0.9fr_0.9fr_1fr] lg:px-8">
         <div>
-          <p className="font-black text-ink">NexaCart</p>
-          <p className="mt-2 max-w-sm font-semibold">A responsive production-style ecommerce frontend built with React, Vite, Tailwind CSS, and Redux Toolkit.</p>
+          <div className="flex items-center gap-2">
+            <span className="grid h-10 w-10 place-items-center rounded bg-brand-700 font-black text-white">NC</span>
+            <p className="text-lg font-black text-ink">NexaCart</p>
+          </div>
+          <p className="mt-3 max-w-sm text-sm font-semibold leading-6 text-slate-500">
+            A responsive production-style ecommerce frontend for fast product discovery, saved carts, wishlist, and checkout.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2 text-xs font-black text-slate-600">
+            <span className="rounded bg-slate-100 px-3 py-2">React</span>
+            <span className="rounded bg-slate-100 px-3 py-2">Redux Toolkit</span>
+            <span className="rounded bg-slate-100 px-3 py-2">Tailwind CSS</span>
+          </div>
         </div>
         <div>
-          <p className="font-black text-ink">Store</p>
-          <p className="mt-2 font-semibold">Products, wishlist, cart, checkout</p>
+          <p className="font-black text-ink">Shop</p>
+          <div className="mt-3 grid gap-2 text-sm font-semibold text-slate-500">
+            <Link to="/" className="hover:text-brand-700">Products</Link>
+            <Link to="/wishlist" className="hover:text-brand-700">Wishlist</Link>
+            <Link to="/checkout" className="hover:text-brand-700">Checkout</Link>
+            <Link to="/auth" className="hover:text-brand-700">Account</Link>
+          </div>
         </div>
         <div>
           <p className="font-black text-ink">Support</p>
-          <p className="mt-2 font-semibold">Returns, shipping, secure payments</p>
+          <div className="mt-3 grid gap-2 text-sm font-semibold text-slate-500">
+            <span>Shipping and delivery</span>
+            <span>Returns and refunds</span>
+            <span>Secure payments</span>
+            <span>Order tracking</span>
+          </div>
+        </div>
+        <div>
+          <p className="font-black text-ink">Store Promise</p>
+          <div className="mt-3 grid gap-3 text-sm font-semibold text-slate-500">
+            <span className="flex items-center gap-2"><Truck size={17} className="text-brand-700" /> Fast dispatch</span>
+            <span className="flex items-center gap-2"><ShieldCheck size={17} className="text-brand-700" /> Protected checkout</span>
+            <span className="flex items-center gap-2"><PackageCheck size={17} className="text-brand-700" /> Easy returns</span>
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-slate-200">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 text-xs font-semibold text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+          <span>© 2026 NexaCart. Built by Shreya Tiwari.</span>
+          <span>Production-ready responsive frontend demo.</span>
         </div>
       </div>
     </footer>

@@ -13,9 +13,13 @@ const readJson = (key, fallback) => {
 const persist = (store) => (next) => (action) => {
   const result = next(action)
   const state = store.getState()
-  localStorage.setItem('ecom_cart', JSON.stringify(state.cart.items))
-  localStorage.setItem('ecom_wishlist', JSON.stringify(state.wishlist.items))
-  localStorage.setItem('ecom_auth', JSON.stringify(state.auth.user))
+  try {
+    localStorage.setItem('ecom_cart', JSON.stringify(state.cart.items))
+    localStorage.setItem('ecom_wishlist', JSON.stringify(state.wishlist.items))
+    localStorage.setItem('ecom_auth', JSON.stringify(state.auth.user))
+  } catch {
+    // Storage may be unavailable in strict privacy modes.
+  }
   return result
 }
 
@@ -23,6 +27,17 @@ const api = axios.create({
   baseURL: 'https://dummyjson.com',
   timeout: 3500,
 })
+
+const normalizeCategory = (category, index) => {
+  const value = category?.toLowerCase() ?? ''
+  if (['beauty', 'fragrances', 'skin-care'].some((key) => value.includes(key))) return 'Beauty'
+  if (['furniture', 'home', 'kitchen', 'decor'].some((key) => value.includes(key))) return 'Home'
+  if (['laptop', 'smartphone', 'mobile', 'tablet', 'electronics'].some((key) => value.includes(key))) return 'Electronics'
+  if (['grocer', 'food'].some((key) => value.includes(key))) return 'Grocery'
+  if (['sport', 'vehicle', 'motorcycle'].some((key) => value.includes(key))) return 'Sports'
+  if (['shirt', 'dress', 'shoe', 'watch', 'bag', 'jewel', 'tops', 'fashion'].some((key) => value.includes(key))) return 'Fashion'
+  return localProducts[index % localProducts.length]?.category ?? categories[index % categories.length]
+}
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async (_, { getState }) => {
   const { filters } = getState().products
@@ -35,7 +50,7 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async (_
       return {
         id: item.id,
         title: item.title,
-        category: categories[index % categories.length],
+        category: normalizeCategory(item.category, index),
         price,
         originalPrice: Math.round(price * 1.22),
         rating: item.rating,

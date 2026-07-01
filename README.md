@@ -122,6 +122,12 @@ npm run lint
 
 Runs Oxlint for code quality checks.
 
+```bash
+npm run test:e2e
+```
+
+Runs Playwright smoke tests for the main shopping flow and mobile layout.
+
 ## Production Notes
 
 The project currently uses API-style product loading with a local fallback dataset. For a full production deployment, this frontend can be connected to a backend service for:
@@ -161,6 +167,7 @@ The project has been verified with:
 ```bash
 npm run build
 npm run lint
+npm run test:e2e
 ```
 
 ## Author
