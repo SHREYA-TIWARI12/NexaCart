@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, NavLink, Route, Routes, useNavigate, useParams } from 'react-router-dom'
+import { Link, NavLink, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -62,6 +62,7 @@ function App() {
 
 function Navbar() {
   const dispatch = useDispatch()
+  const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const cartCount = useSelector((state) => state.cart.items.reduce((sum, item) => sum + item.quantity, 0))
   const wishlistCount = useSelector((state) => state.wishlist.items.length)
@@ -71,6 +72,7 @@ function Navbar() {
     ['/wishlist', 'Wishlist'],
     ['/checkout', 'Checkout'],
   ]
+  const isShopPage = location.pathname === '/'
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
@@ -85,9 +87,12 @@ function Navbar() {
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded bg-brand-700 text-white shadow-sm">NC</span>
           <span className="hidden text-xl min-[390px]:inline">NexaCart</span>
         </Link>
-        <div className="mx-4 hidden max-w-xl flex-1 lg:block">
-          <SearchBox compact />
-        </div>
+        {isShopPage && (
+          <div className="mx-4 hidden max-w-xl flex-1 lg:block">
+            <SearchBox compact />
+          </div>
+        )}
+        {!isShopPage && <div className="hidden flex-1 lg:block" />}
         <nav className="hidden items-center gap-5 md:flex">
           {navItems.map(([to, label]) => (
             <NavLink key={to} to={to} className={({ isActive }) => `text-sm font-bold ${isActive ? 'text-brand-700' : 'text-slate-600'}`}>
@@ -139,32 +144,36 @@ function Navbar() {
             <Link to="/auth" onClick={() => setMenuOpen(false)} className="font-semibold text-slate-700">
               {user ? user.email : 'Login / Register'}
             </Link>
-            <div className="grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
-              {['Electronics', 'Fashion', 'Home', 'Beauty', 'Sports', 'Grocery'].map((category) => (
-                <button
-                  key={category}
-                  onClick={() => {
-                    dispatch(setFilter({ category }))
-                    setMenuOpen(false)
-                  }}
-                  className="rounded border border-slate-200 px-3 py-2 text-left text-sm font-bold text-slate-600"
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+            {isShopPage && (
+              <div className="grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
+                {['Electronics', 'Fashion', 'Home', 'Beauty', 'Sports', 'Grocery'].map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => {
+                      dispatch(setFilter({ category }))
+                      setMenuOpen(false)
+                    }}
+                    className="rounded border border-slate-200 px-3 py-2 text-left text-sm font-bold text-slate-600"
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
-      <div className="hidden border-t border-slate-100 bg-white md:block">
-        <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-2 text-sm font-bold text-slate-600 sm:px-6 lg:px-8">
-          {['Electronics', 'Fashion', 'Home', 'Beauty', 'Sports', 'Grocery'].map((category) => (
-            <button key={category} onClick={() => dispatch(setFilter({ category }))} className="hover:text-brand-700">
-              {category}
-            </button>
-          ))}
+      {isShopPage && (
+        <div className="hidden border-t border-slate-100 bg-white md:block">
+          <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-2 text-sm font-bold text-slate-600 sm:px-6 lg:px-8">
+            {['Electronics', 'Fashion', 'Home', 'Beauty', 'Sports', 'Grocery'].map((category) => (
+              <button key={category} onClick={() => dispatch(setFilter({ category }))} className="hover:text-brand-700">
+                {category}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </header>
   )
 }

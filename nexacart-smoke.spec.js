@@ -15,9 +15,11 @@ test('desktop shopping flow works', async ({ page }) => {
   await page.getByRole('button', { name: 'Toggle wishlist' }).first().click()
   await page.getByRole('navigation').getByRole('link', { name: 'Wishlist' }).click()
   await expect(page.getByRole('heading', { name: 'Wishlist' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Electronics' })).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Add to Cart' }).first()).toBeVisible()
 
   await page.getByRole('link', { name: 'Shop' }).click()
+  await expect(page.getByRole('button', { name: 'Electronics' })).toBeVisible()
   await page.getByPlaceholder('Search products').first().fill('mascara')
   await expect(page.getByText(/products found/)).toBeVisible()
 
