@@ -105,6 +105,12 @@ npm run build
 Creates an optimized production build.
 
 ```bash
+npm run deploy
+```
+
+Builds the project and publishes the `dist` folder to the `gh-pages` branch for GitHub Pages.
+
+```bash
 npm run preview
 ```
 
@@ -125,6 +131,28 @@ The project currently uses API-style product loading with a local fallback datas
 - Order storage
 - Payment gateway integration
 - Admin dashboard and product management
+
+## GitHub Pages Deployment
+
+This project is configured for GitHub Pages with Vite's base path set to `/NexaCart/`.
+
+To deploy:
+
+```bash
+npm run deploy
+```
+
+Then enable GitHub Pages in the repository settings:
+
+```text
+Settings -> Pages -> Deploy from a branch -> gh-pages -> /root
+```
+
+Live URL:
+
+```text
+https://shreya-tiwari12.github.io/NexaCart/
+```
 
 ## Verification
 
