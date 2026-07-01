@@ -11,12 +11,12 @@ function Footer() {
             <p className="text-lg font-black text-ink">NexaCart</p>
           </div>
           <p className="mt-3 max-w-sm text-sm font-semibold leading-6 text-slate-500">
-            A responsive production-style ecommerce frontend for fast product discovery, saved carts, wishlist, and checkout.
+            Curated daily essentials, quick delivery, simple returns, and a smoother way to shop from home.
           </p>
           <div className="mt-4 flex flex-wrap gap-2 text-xs font-black text-slate-600">
-            <span className="rounded bg-slate-100 px-3 py-2">React</span>
-            <span className="rounded bg-slate-100 px-3 py-2">Redux Toolkit</span>
-            <span className="rounded bg-slate-100 px-3 py-2">Tailwind CSS</span>
+            <span className="rounded bg-slate-100 px-3 py-2">Fast delivery</span>
+            <span className="rounded bg-slate-100 px-3 py-2">Easy returns</span>
+            <span className="rounded bg-slate-100 px-3 py-2">Secure checkout</span>
           </div>
         </div>
         <div>
@@ -31,10 +31,10 @@ function Footer() {
         <div>
           <p className="font-black text-ink">Support</p>
           <div className="mt-3 grid gap-2 text-sm font-semibold text-slate-500">
-            <span>Shipping and delivery</span>
-            <span>Returns and refunds</span>
-            <span>Secure payments</span>
-            <span>Order tracking</span>
+            <Link to="/support/shipping" className="hover:text-brand-700">Shipping and delivery</Link>
+            <Link to="/support/returns" className="hover:text-brand-700">Returns and refunds</Link>
+            <Link to="/support/payments" className="hover:text-brand-700">Secure payments</Link>
+            <Link to="/support/tracking" className="hover:text-brand-700">Order tracking</Link>
           </div>
         </div>
         <div>
@@ -48,8 +48,8 @@ function Footer() {
       </div>
       <div className="border-t border-slate-200">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 text-xs font-semibold text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-          <span>© 2026 NexaCart. Built by Shreya Tiwari.</span>
-          <span>Production-ready responsive frontend demo.</span>
+          <span>© 2026 NexaCart. All rights reserved.</span>
+          <span>Made for simple, reliable everyday shopping.</span>
         </div>
       </div>
     </footer>

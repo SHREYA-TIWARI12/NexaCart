@@ -43,6 +43,9 @@ test('desktop shopping flow works', async ({ page }) => {
     await page.getByRole('button', { name: 'Place Order' }).click({ force: true })
   }
   await expect(page.getByRole('heading', { name: 'Order placed successfully' })).toBeVisible()
+  await expect(page.getByText('Production-ready responsive frontend demo.')).toHaveCount(0)
+  await page.getByRole('link', { name: 'Shipping and delivery' }).click()
+  await expect(page.getByRole('heading', { name: 'Shipping and Delivery' })).toBeVisible()
 })
 
 test('mobile layout has no horizontal overflow and menu works', async ({ page }) => {
